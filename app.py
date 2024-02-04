@@ -26,15 +26,23 @@ def choose_team():
     for team in TEAMS:
         print(f"\n{int(TEAMS.index(team))+1}) { team}")
     print(range(len(TEAMS)))
-    response = input("\nChoose a team:    ")
-    # if response in range(1, len(TEAMS)):
+    response = int(input("\nChoose a team:    "))
+    if response in range(1, len(TEAMS)):
+        print(f"Team {team[response+1]}")
 
 
 def player_to_team():
-    afsdfdasf
-
+    # for team in TEAMS:
+        for player in PLAYERS:
+            for team in TEAMS:
+                team = ""
+                player = [name.get("name") for name in PLAYERS]
+                if len(team) < len(PLAYERS) // len(TEAMS):
+                    team.append(player)
+        print(team)
 
 if __name__ == "__main__":
+    player_to_team()
     stats_tool()
 
 
