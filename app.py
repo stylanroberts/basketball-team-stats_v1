@@ -1,4 +1,6 @@
+import copy
 from constants import PLAYERS, TEAMS
+
 
 
 def stats_tool():
@@ -20,6 +22,9 @@ def start_or_quit():
     elif response.upper() == "B":
         print("Goodbye!")
         exit()
+    else:
+        print("\nNot a valid input, try again.")
+        start_or_quit()
 
 
 def choose_team():
@@ -32,14 +37,25 @@ def choose_team():
 
 
 def player_to_team():
-    # for team in TEAMS:
+    for team in TEAMS:
         for player in PLAYERS:
-            for team in TEAMS:
-                team = ""
+            # for team in TEAMS:
+                team = []
+                players_copy = copy.deepcopy(PLAYERS)
+                # players_list = PLAYERS.split(",")
                 player = [name.get("name") for name in PLAYERS]
-                if len(team) < len(PLAYERS) // len(TEAMS):
-                    team.append(player)
-        print(team)
+                if len(team) < ( len(PLAYERS) // len(TEAMS) ):
+                    sorted_team = team.append(player)
+                else:
+                    continue
+                    
+
+                    
+
+
+
+        print(sorted_team)
+
 
 if __name__ == "__main__":
     player_to_team()
