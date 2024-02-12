@@ -9,6 +9,21 @@ panthers = []
 bandits = []
 warriors = []
 
+# team_list =[]
+
+# maybe idk if this will work yet
+
+def sort_teams():
+    for team in TEAMS:
+        team = []
+        if len(team) < team_length:
+            for player in players:
+                team.append(player)
+                del player
+        team_list.append(team)
+    return team_list
+    
+
 
 team_list = [panthers, bandits, warriors]
 
@@ -66,11 +81,11 @@ def get_stats(team):
         player_guardians = player.get('guardians')
         player_name = player.get('name')
 
-        if response.title() not in player.values():
-            response = input("\nSorry they aren't on the team, try another player!:    ")
+        # if response.title() not in player.values():
+        #     response = input("\nSorry they aren't on the team, try another player!:    ")
 
 
-        elif  response.title() in player.values():
+        if  response.title() == player.get('name'):
             print(f"\nStats for {player_name}:\n")
             print(f"Height: {player_height}")
             
