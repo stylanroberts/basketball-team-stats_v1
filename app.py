@@ -19,6 +19,7 @@ def sort_teams():
         if len(team) < team_length:
             for player in players:
                 team.append(player)
+                del player
         team_list.append(team)
     return team_list
     
