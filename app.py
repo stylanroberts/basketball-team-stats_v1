@@ -9,6 +9,20 @@ panthers = []
 bandits = []
 warriors = []
 
+# team_list =[]
+
+# maybe idk if this will work yet
+
+def sort_teams():
+    for team in TEAMS:
+        team = []
+        if len(team) < team_length:
+            for player in players:
+                team.append(player)
+        team_list.append(team)
+    return team_list
+    
+
 
 team_list = [panthers, bandits, warriors]
 
