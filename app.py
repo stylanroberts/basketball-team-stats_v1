@@ -44,26 +44,22 @@ def balance_teams():
             warriors.append(player)
 
 
-def stats_tool():
-    print("BASKETBALL STATS TOOL\n")
-    print("\n----MENU----\n")
-    start_or_quit()
-
-
-def start_or_quit():
+def main():
+    print("\nBASKETBALL STATS TOOL\n")
+    print("\n----MENU----")
     print("\nHere are your options:\n")
-    print("A) Display Team Stats")
-    print("B) Quit")
+    print("    1) Display Team Stats")
+    print("    2) Quit")
     response = input("\nEnter an option:    ")
 
-    if response.upper() == "A":
+    if response == "1":
         choose_team()
-    elif response.upper() == "B":
+    elif response == "2":
         print("Goodbye!")
         exit()
     else:
         print("\nNot a valid input, try again.")
-        start_or_quit()
+        main()
 
 
 def get_name(team):
@@ -72,18 +68,20 @@ def get_name(team):
         
         player_name = player.get('name')
         team_names.append(player_name)
-    for team in team_names:
-        print(team, end=', ')
+    clean_team_names = (', ').join(team_names)
+    print(clean_team_names)
+
+    # for name in team_names[:-]:
+    #     print(name, end=', ')
     
 
 def get_stats(team):
     print("\nWould you like to see the stats of any of this team's players?")
     while True:
-        response = input("\nType in their first and last name. If you want to quit, press Q!    ")
+        response = input("\nIf so, type in their first and last name. If you want to go back to menu, press ENTER!    ")
         player_response = response.title()
-        if response.lower() == "q".lower():
-            print('Goodbye!')
-            exit()
+        if response == "":
+            main()
         # this link helped explain how to check for key names in list of dicts
         # https://stackoverflow.com/questions/3897499/check-if-value-already-exists-within-list-of-dictionaries-in-python
         if not any(player['name'] == player_response for player in team):
@@ -92,52 +90,52 @@ def get_stats(team):
             break
 
     for player in team:
-
-        player_height = player.get('height')
         player_guardians = player.get('guardians')
-
         if len(player_guardians) > 1:
             player_guardians = ', '.join(player_guardians)
-            
         player_name = player.get('name')
-
-        # if response.title() not in player.values():a
-        #     response = input("\nSorry they aren't on the team, try another player!:    ")
-
+        player_height = player.get('height')
 
         if  response.title() == player.get('name'):
             print(f"\nStats for {player_name}:\n")
             print(f"Height: {player_height}")
-            
-            print(f"Guardian(s): {player_guardians}")
+            if len(player_guardians) == 1:
+                for guardian in player_guardians:
+                    print(f"Guardian: {guardian}")
+            else:
+                print(f"Guardians: {player_guardians}")
             if player['experience'] == False:
                 print("Experience: Low")
             else:
                 print("Experience: High")
-            exit()
-
-
+            to_menu = input("\nPress 'S' to get another player's stats. To go back to menu, press ENTER!   \n")
+            if to_menu == '':
+                main()
+            if to_menu.lower() == 's':
+                get_name(team)
+                get_stats(team)
+        
 
 def choose_team():
+    print('\nTeam list:\n')
     for index, team in enumerate(TEAMS, 1):
-        print(f"{index}) {team}")
-    
+        print(f"    {index}) {team}")
     while True:
-        response = int(input("\nChoose a team:    "))-1
+        try:
+            response = int(input("\nChoose a team:    "))-1
+            if response not in range(0, len(TEAMS)):
+                print("Out of range, try again.")
+            else:
+                break
+        except ValueError:
+            print("Please pick a number assigned to a team on the list.    ")
 
-        if response not in range(0, len(TEAMS)):
-            print("Out of range, try again.")
-        else:
-            break
     picked_team_name = TEAMS[response]
     picked_team = team_list[response]
 
-    # if response in range(0, len(TEAMS)):
     print(f"\nTeam {picked_team_name}:")
     print("\n----------")
     print(f"\nTotal players: {len(team_list[response])}")
-
-
     experienced_num = 0
     not_experienced_num = 0
     for player in picked_team:
@@ -174,4 +172,4 @@ def clean_data(players):
 
 if __name__ == "__main__":
     balance_teams()
-    stats_tool()
+    main()
