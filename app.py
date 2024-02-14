@@ -8,16 +8,35 @@ team_length = len(PLAYERS) // len(TEAMS)
 panthers = []
 bandits = []
 warriors = []
+team_list = [panthers, bandits, warriors]
 
 experienced = []
 not_experienced = []
-team_list = [panthers, bandits, warriors]
+
+
+
+def clean_data(players):
+    cleaned = []
+    players = copy.deepcopy(players)
+    for user in players:
+        fixed = {}
+        fixed['name'] = user['name']
+        fixed['height'] = int(user['height'].split(' ')[0])
+        if len(user['guardians']) > 1:
+            fixed['guardians'] = user['guardians'].split(' and ')
+        else:
+            fixed['guardians'] = user['guardians']
+        if user['experience'] == "YES":
+            fixed['experience'] = True
+        else:
+            fixed['experience'] = False
+        cleaned.append(fixed)
+    return cleaned
 
 
 def exp_or_not(players):
     players_clean = clean_data(players)
     for player in players_clean:
-
         if player.get('experience') == True:
             experienced.append(player)
         else:
@@ -26,7 +45,7 @@ def exp_or_not(players):
 
 def balance_teams():
     exp_or_not(players)
-    exp_per_team = len(experienced) // len(TEAMS)
+    exp_per_team = len(experienced) // len(team_list)
     for player in experienced:
         if len(panthers) < exp_per_team:
             panthers.append(player)
@@ -34,7 +53,7 @@ def balance_teams():
            bandits.append(player)
         elif len(warriors) < exp_per_team:
             warriors.append(player)
-
+            
     for player in not_experienced:
         if len(panthers) < team_length:
             panthers.append(player)
@@ -45,13 +64,13 @@ def balance_teams():
 
 
 def main():
+    balance_teams()
     print("\nBASKETBALL STATS TOOL\n")
     print("\n----MENU----")
     print("\nHere are your options:\n")
     print("    1) Display Team Stats")
     print("    2) Quit")
     response = input("\nEnter an option:    ")
-
     if response == "1":
         choose_team()
     elif response == "2":
@@ -62,23 +81,67 @@ def main():
         main()
 
 
+def choose_team():
+    print('\nTeam list:\n')
+    for index, team in enumerate(TEAMS, 1):
+        print(f"    {index}) {team}")
+    while True:
+        try:
+            response = int(input("\nChoose a team:    "))-1
+            if response not in range(0, len(TEAMS)):
+                print("Out of range, try again.")
+            else:
+                break
+        except ValueError:
+            print("Please pick a number assigned to a team on the list.    ")
+    picked_team_name = TEAMS[response]
+    picked_team = team_list[response]
+    print(f"\nTeam {picked_team_name}")
+    print("-------------")
+    get_name(picked_team)
+    player_stats(picked_team)
+
+
 def get_name(team):
     team_names = []
     for player in team:
-        
         player_name = player.get('name')
         team_names.append(player_name)
     clean_team_names = (', ').join(team_names)
-    print(clean_team_names)
+    print(f"\nPlayers: {clean_team_names}\n")
+    team_stats(team)
 
-    # for name in team_names[:-]:
-    #     print(name, end=', ')
-    
 
-def get_stats(team):
+def team_stats(team):
+    print("\nTeam stats:")
+    total_players = len(team)
+    total_height = 0
+    experienced_num = 0
+    not_experienced_num = 0
+    guardian_list = []
+    for player in team:
+        guardian_names = player.get('guardians')
+        for guardian in guardian_names:
+            guardian_list.append(guardian)
+        
+        if player.get('experience') == True:
+            experienced_num+=1
+        else:
+            not_experienced_num+=1
+        player_height = player.get('height')
+        total_height+=player_height
+    avg_height = total_height // len(team)
+    print(f"    Total players: {total_players}")
+    print(f"    Experienced players: {experienced_num}")
+    print(f"    Non-experienced players: {not_experienced_num}")
+    print(f"    Average height: {avg_height}")
+    print(f"    Guardians: {', '.join(guardian_list)}")
+
+
+def player_stats(team):
     print("\nWould you like to see the stats of any of this team's players?")
     while True:
-        response = input("\nIf so, type in their first and last name. If you want to go back to menu, press ENTER!    ")
+        response = input("\nType in their first and last name. If you want to go back to menu, press ENTER!    ")
         player_response = response.title()
         if response == "":
             main()
@@ -95,7 +158,6 @@ def get_stats(team):
             player_guardians = ', '.join(player_guardians)
         player_name = player.get('name')
         player_height = player.get('height')
-
         if  response.title() == player.get('name'):
             print(f"\nStats for {player_name}:\n")
             print(f"Height: {player_height}")
@@ -113,63 +175,11 @@ def get_stats(team):
                 main()
             if to_menu.lower() == 's':
                 get_name(team)
-                get_stats(team)
+                player_stats(team)
         
 
-def choose_team():
-    print('\nTeam list:\n')
-    for index, team in enumerate(TEAMS, 1):
-        print(f"    {index}) {team}")
-    while True:
-        try:
-            response = int(input("\nChoose a team:    "))-1
-            if response not in range(0, len(TEAMS)):
-                print("Out of range, try again.")
-            else:
-                break
-        except ValueError:
-            print("Please pick a number assigned to a team on the list.    ")
-
-    picked_team_name = TEAMS[response]
-    picked_team = team_list[response]
-
-    print(f"\nTeam {picked_team_name}:")
-    print("\n----------")
-    print(f"\nTotal players: {len(team_list[response])}")
-    experienced_num = 0
-    not_experienced_num = 0
-    for player in picked_team:
-
-        if player.get('experience') == True:
-            experienced_num+=1
-        else:
-            not_experienced_num+=1
-
-    print(f"\nNumber of experienced players: {experienced_num}\n")
-    get_name(picked_team)
-    get_stats(picked_team)
-
-
-def clean_data(players):
-    cleaned = []
-    players = copy.deepcopy(players)
-    for user in players:
-        fixed = {}
-        if len(user['guardians']) > 1:
-            fixed['guardians'] = user['guardians'].split(' and ')
-        else:
-            fixed['guardians'] = user['guardians']
-        fixed['name'] = user['name']
-
-        fixed['height'] = int(user['height'].split(' ')[0])
-        if user['experience'] == "YES":
-            fixed['experience'] = True
-        else:
-            fixed['experience'] = False
-        cleaned.append(fixed)
-    return cleaned
-
-
 if __name__ == "__main__":
-    balance_teams()
     main()
+
+
+
