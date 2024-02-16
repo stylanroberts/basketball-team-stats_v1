@@ -2,17 +2,13 @@ import copy
 from constants import PLAYERS, TEAMS
 
 players = copy.deepcopy(PLAYERS)
-
 team_length = len(PLAYERS) // len(TEAMS)
-
 panthers = []
 bandits = []
 warriors = []
 team_list = [panthers, bandits, warriors]
-
 experienced = []
-not_experienced = []
-
+not_experienced = [] 
 
 
 def clean_data(players):
@@ -53,7 +49,6 @@ def balance_teams():
            bandits.append(player)
         elif len(warriors) < exp_per_team:
             warriors.append(player)
-            
     for player in not_experienced:
         if len(panthers) < team_length:
             panthers.append(player)
@@ -65,21 +60,24 @@ def balance_teams():
 
 def main():
     balance_teams()
+    print("\n---------------------")
     print("\nBASKETBALL STATS TOOL\n")
+    print("---------------------\n")
     print("\n----MENU----")
     print("\nHere are your options:\n")
     print("    1) Display Team Stats")
     print("    2) Quit")
-    response = input("\nEnter an option:    ")
-    if response == "1":
-        choose_team()
-    elif response == "2":
-        print("Goodbye!")
-        exit()
-    else:
-        print("\nNot a valid input, try again.")
-        main()
-
+    while True:
+        response = input("\nEnter an option:    ")
+        if response == "1":
+            choose_team()
+            break
+        elif response == "2":
+            print("Goodbye!")
+            exit()
+        else:
+            print("\nNot a valid input, try again.")
+            
 
 def choose_team():
     print('\nTeam list:\n')
@@ -93,7 +91,7 @@ def choose_team():
             else:
                 break
         except ValueError:
-            print("Please pick a number assigned to a team on the list.    ")
+            print("Please pick a number assigned to a team on the list.")
     picked_team_name = TEAMS[response]
     picked_team = team_list[response]
     print(f"\nTeam {picked_team_name}")
@@ -151,7 +149,6 @@ def player_stats(team):
             print("Sorry not in the team, we need a player on THIS team!")
         else:
             break
-
     for player in team:
         player_guardians = player.get('guardians')
         if len(player_guardians) > 1:
